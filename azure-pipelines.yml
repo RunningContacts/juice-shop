@@ -11,18 +11,18 @@ steps:
 
   # install & prepare snyk
   - script: |
+      npm install
       npm install -g snyk
       snyk auth $(SNYK_TOKEN)
     displayName: 'snyk install & auth'
+    
   # snyk code
   - script: snyk code test --sarif-file-output=CodeAnalysisLogs/snyk-code.sarif
     continueOnError: true
     displayName: 'snyk code'
 
   # snyk open source
-  - script: |
-    npm install
-    snyk test --sarif-file-output=CodeAnalysisLogs/snyk-open-source.sarif
+  - script: snyk test --sarif-file-output=CodeAnalysisLogs/snyk-open-source.sarif
     continueOnError: true
     displayName: 'snyk open source'
 
