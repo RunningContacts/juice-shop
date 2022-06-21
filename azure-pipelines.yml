@@ -1,26 +1,44 @@
 # Starter pipeline
 
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
-trigger:
-- master
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  - checkout: self
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-- task: SnykSecurityScan@1
-  inputs:
-    serviceConnectionEndpoint: 'TestPipeline'
-    testType: 'app'
-    monitorWhen: 'always'
-    failOnIssues: true
+  # .. your instructions on building the app or preparing the repository
+
+  # install & prepare snyk
+  - script: |
+      npm install -g snyk
+      snyk auth $(SNYK_TOKEN)
+    displayName: 'snyk install & auth'
+  # snyk code
+  - script: snyk code test --sarif-file-output=CodeAnalysisLogs/snyk-code.sarif
+    continueOnError: true
+    displayName: 'snyk code'
+
+  # snyk open source
+  - script: snyk test --sarif-file-output=CodeAnalysisLogs/snyk-open-source.sarif
+    continueOnError: true
+    displayName: 'snyk open source'
+
+  # snyk container
+  # NOTE: Change this to your container name
+  - script: snyk container test sebsnyk/juice-shop --file=Dockerfile --sarif-file-output=CodeAnalysisLogs/snyk-container.sarif
+    continueOnError: true
+    displayName: 'snyk container'
+
+  # snyk iac
+  - script: snyk iac test --sarif-file-output=CodeAnalysisLogs/snyk-iac.sarif
+    continueOnError: true
+    displayName: 'snyk iac'
+
+  # publish the results
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifact: CodeAnalysisLogs"
+    condition: succeededOrFailed()
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)/CodeAnalysisLogs
+      ArtifactName: CodeAnalysisLogs
