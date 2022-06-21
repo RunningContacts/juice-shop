@@ -26,9 +26,9 @@ steps:
 
   # snyk container
   # NOTE: Change this to your container name
-  - script: snyk container test sebsnyk/juice-shop --file=Dockerfile --sarif-file-output=CodeAnalysisLogs/snyk-container.sarif
-    continueOnError: true
-    displayName: 'snyk container'
+ # - script: snyk container test sebsnyk/juice-shop --file=Dockerfile --sarif-file-output=CodeAnalysisLogs/snyk-container.sarif
+  #  continueOnError: true
+   # displayName: 'snyk container'
 
   # snyk iac
   - script: snyk iac test --sarif-file-output=CodeAnalysisLogs/snyk-iac.sarif
