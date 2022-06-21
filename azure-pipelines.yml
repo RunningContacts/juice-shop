@@ -20,7 +20,9 @@ steps:
     displayName: 'snyk code'
 
   # snyk open source
-  - script: snyk test --sarif-file-output=CodeAnalysisLogs/snyk-open-source.sarif
+  - script: |
+    npm install
+    snyk test --sarif-file-output=CodeAnalysisLogs/snyk-open-source.sarif
     continueOnError: true
     displayName: 'snyk open source'
 
