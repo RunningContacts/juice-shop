@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021 Bjoern Kimminich.
+ * Copyright (c) 2014-2022 Bjoern Kimminich & the OWASP Juice Shop contributors.
  * SPDX-License-Identifier: MIT
  */
 
@@ -56,7 +56,7 @@ export const ForgedFeedbackInstruction: ChallengeInstruction = {
       fixture: 'app-navbar',
       unskippable: true,
       async resolved () {
-        let userId = (document.getElementById('userId') as HTMLInputElement).value
+        const userId = (document.getElementById('userId') as HTMLInputElement).value
         while (true) {
           if ((document.getElementById('userId') as HTMLInputElement).value !== userId) {
             break
